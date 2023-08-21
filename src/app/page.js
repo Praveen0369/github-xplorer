@@ -1,12 +1,57 @@
 "use client";
 import { useState } from 'react'
-import { Inter } from 'next/font/google'
 import {BsFacebook, BsInstagram, BsLinkedin, BsMoonStarsFill, BsSearch} from 'react-icons/bs'
-import {} from 'react-icons/ai'
-
+import {useRouter} from 'next/navigation'
 export default function Home() {
   const [darkMode, setDarkMode] = useState(true);
+  const router = useRouter();
+  function appendData(data) {
+    var mainContainer = document.getElementById('contentpre');
+    const tbl=document.createElement("table");
+    const tblbody = document.createElement("tbody");
+    const heads='["id","name","description","language","forks_count","visibility","stargazers_count"]';
+    const arr=JSON.parse(heads);
+    const tru=document.createElement("tr");
+    for(var y=0;y<arr.length;y++){
+        const thead=document.createElement("th");
+        const celle=document.createTextNode(arr[y]);
+        thead.appendChild(celle);
+        tru.appendChild(thead);
+    }
   
+    tblbody.appendChild(tru);
+    
+    for(var k=0;k<data.length;k++){
+        const row =document.createElement("tr");
+
+        for(var j=0;j<arr.length;j++){
+            const cell =document.createElement("td");
+            //alert(data[k][arr[j]]);
+            cell.innerHTML=data[k][arr[j]];
+            row.appendChild(cell);
+        }
+        tblbody.appendChild(row);
+    }
+    tbl.appendChild(tblbody);
+   
+    mainContainer.appendChild(tbl);
+  }
+  function handleclick(){
+    const valu=document.getElementById('namer').value;
+    const url='https://api.github.com/users/'+valu+'/repos';
+    fetch(url)
+    .then(function(response)
+    {
+      return response.json();
+    })
+    .then(function (data) {  
+      appendData(data);
+    })
+    .catch(function (err) {
+      console.log(err);
+    });
+    document.getElementById('button').style.display="none";
+  }
   function dd(){
     {/* function to calculate data from username */}
     const val=document.getElementById('namer').value;
@@ -20,8 +65,9 @@ export default function Home() {
       {/*dynamic display of data here */}
     const outbox='<div style="text-align: center;padding-top:50px;"> Hi This Is '+x+'</div><div style="text-align: center;"> You Are Currently viewing My Github Repository Info Page</div><div style="display: flex;align-items: center;justify-content: center;"><img style="text-align:center; padding:20px; padding-x:120px" src='+aa+'></img></div><div><div style="display: flex;align-items: center;justify-content: center;margin-bottom:50px;"><img src="https://github-profile-trophy.vercel.app/?username='+val+'" alt="'+val+'" /></div><div style="display: flex;align-items: center;justify-content: center;margin-bottom:50px;""><img src="https://github-readme-stats.vercel.app/api/top-langs?username='+val+'&show_icons=true&locale=en&layout=compact"></img></div><div style="display: flex;align-items: center;justify-content: center;margin-bottom:50px;"><img src="https://github-readme-stats.vercel.app/api?username='+val+'&show_icons=true&locale=en"></img></div><div style="display: flex;align-items: center;justify-content: center;margin-bottom:50px;"><img src="https://github-readme-streak-stats.herokuapp.com/?user='+val+'&"></img></div></div>';
     document.getElementById('content').innerHTML=outbox;
+    document.getElementById('button').style.height = "30px";
+    document.getElementById('button').style.color="red";
     }
-   
   }
   return (
     <div className={darkMode ? "dark" : "light"} > {/*darkmode settings */}
@@ -42,8 +88,9 @@ export default function Home() {
       </nav>
     </main>
     
-    <section className='py-10 dark:bg-gray-800'>
-      <div className='text-3xl p-3 justify-center text-center lg:py-8 text-teal-500 font-semibold lg:text-4xl'>
+    <section className='py-8 dark:bg-gray-800'>
+      
+      <div className='text-3xl px-3 justify-center text-center lg:py-8 text-teal-500 font-semibold lg:text-4xl'>
         Github Tracker
       </div>
       <div className='text-teal-500 font-medium text-2xl lg:py-7 text-center px-3 lg:text-3xl'>
@@ -63,6 +110,15 @@ export default function Home() {
         </div>
       </section>
     </div>
+    <div className='text-center bg-white  dark:bg-gray-800 h-4 text-white dark:text-gray-800 underline text-xl'>
+        <button id='button' className='bg-white text-white dark:text-gray-800 dark:bg-gray-800' onClick={handleclick}>Get To Know More Information on repositories</button>
+      </div>
+    <div className='pt-4 bg-white dark:bg-gray-800'>
+      <section className='dark:bg-gray-800' >
+      <div id="contentpre" className=' overflow-x-auto px-3 border-yellow-400 flex shadow-yellow-300 flex-col bg-cover bg-opacity-40 bg-center bg-fixed bg-no-repeat gap-10  w-full dark:text-white border-y-2 lg:text-2xl font-bold text-white text-center '>
+        </div>
+      </section>
+    </div>
     <div>
     <section className='dark:bg-gray-800 dark:text-white pb-12' id='about'>
       <div className='flex p-5 py-10 flex-col gap-10 lg:flex-row lg:gap-15'>
@@ -75,7 +131,7 @@ export default function Home() {
       <div className=' flex basis-1/3 dark:shadow-teal-500 rounded-lg shadow-lg p-4 text-lg'>👤 User Profiles: Peek into the profiles of GitHub users. Discover their repositories, followers, and contributions. Forge connections and stay inspired by the developer community&apos;s creativity.</div>
       <div className=' flex basis-1/3 dark:shadow-teal-500 rounded-lg shadow-lg p-4 text-lg'>🛡️ Privacy and Security: Your data security is paramount to us. Rest assured that your GitHub data and personal information are handled with the utmost care and respect for privacy.</div>
       </div>
-
+      <div className='text-white dark:text-gray-800 overflow-hidden h-8 w-8 text-xs'>GitHub repositories, Coding projects, Open source, Developer collaboration, Discover, Explore, Innovation, Technology, Learning opportunities, Top repositories, Contributions, Empowerment, Technological advancement, Diverse array, Community-driven, Inspire, Developer community, Coding excellence, Showcase, Tech enthusiasts.</div>
     </section>
     <section className='bg-gray-900 dark:bg-gray-800 rounded-lg border-t border-teal-400  lg:flex shadow-[rgba(0,_0,_0,_0.4)_0px_30px_90px]'>
     <section className=' p-5 w-full border-r rounded-lg border-cyan-400'id='footer'>
